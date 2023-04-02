@@ -1,4 +1,4 @@
-package com.atguigu.gulimall.coupon;
+package com.atguigu.gulimall.order;
 
 
 import org.junit.Test;
@@ -8,10 +8,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-class GulimallCouponApplicationTests {
+class GulimallOrderApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
 
 }
