@@ -55,7 +55,7 @@
             <scope>provided</scope>
         </dependency>
 
-<!--        &lt;!&ndash;        服务注册/发现&ndash;&gt;-->
+        <!--        服务注册/发现-->
 <!--        <dependency>-->
 <!--            <groupId>com.alibaba.cloud</groupId>-->
 <!--            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
