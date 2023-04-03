@@ -19,8 +19,8 @@ public class GulimallProductApplicationTests {
     @Test
     public void contextLoads() {
         BrandEntity brandEntity = new BrandEntity();
-        brandEntity.setBrandId(1L);
-        brandEntity.setDescript("苹果");
+        brandEntity.setBrandId(2L);
+        brandEntity.setDescript("苹果2");
         // brandService.save(brandEntity);
         //System.out.println("保存成功....");
         brandService.saveOrUpdate(brandEntity);
