@@ -39,6 +39,8 @@ public class UmsMemberController {
     public R test(){
         UmsMemberEntity memberEntity = new UmsMemberEntity();
         memberEntity.setNickname("张三");
+
+        // 通过feign获取远端优惠券信息
         R membercoupons = couponFeignService.membercoupons(); //假设张三去数据库查了后返回了张三的优惠券信息
 
         // 打印会员和优惠券信息
