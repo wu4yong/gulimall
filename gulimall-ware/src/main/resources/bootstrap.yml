@@ -5,7 +5,8 @@ spring:
     nacos:
       discovery:
         server-addr: 114.115.138.227:8848
+        namespace: 598c7695-4d5c-4676-9d05-a7784d193619 # dev命名空间
       config:
         server-addr: 114.115.138.227:8848
-        file-extension: yaml
         namespace: 598c7695-4d5c-4676-9d05-a7784d193619 # dev命名空间
+        file-extension: yaml
