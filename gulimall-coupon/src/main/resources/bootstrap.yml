@@ -10,9 +10,9 @@ spring:
         file-extension: yaml
         namespace: 598c7695-4d5c-4676-9d05-a7784d193619 # dev命名空间
 #        group: DEFAULT_GROUP  默认分组可不写，使用分组可修改值
-#        ext-config:
-#          data-id: datasource.yml
-#          group: EFAULT_GROUP
-#          refresh: true
+#        ext-config:  多个配置文件（待编写）
+#          data-id: datasource.yml 多个配置文件（待编写）
+#          group: EFAULT_GROUP 多个配置文件（待编写）
+#          refresh: true 多个配置文件（待编写）
 #  profiles:
 #    active: dev
