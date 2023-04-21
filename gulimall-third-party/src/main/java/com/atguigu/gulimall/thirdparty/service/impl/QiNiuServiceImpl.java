@@ -1,7 +1,8 @@
-package com.atguigu.gulimall.product.service.impl;
+package com.atguigu.gulimall.thirdparty.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.atguigu.gulimall.product.service.IQiNiuService;
+
+import com.atguigu.gulimall.thirdparty.service.IQiNiuService;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.storage.Configuration;

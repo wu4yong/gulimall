@@ -1,4 +1,4 @@
-package com.atguigu.gulimall.product.service;
+package com.atguigu.gulimall.thirdparty.service;
 
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
