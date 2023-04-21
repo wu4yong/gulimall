@@ -90,8 +90,9 @@ public class CategoryController {
     @RequestMapping("/delete")
     //@RequiresPermissions("product:category:delete")
     public R delete(@RequestBody Long[] catIds) {
-        categoryService.removeByIds(Arrays.asList(catIds));
-
+        // categoryService.removeByIds(Arrays.asList(catIds));
+        // 1、检查当前删除的菜单，是否被其他地方引用
+        categoryService.removeMenuByIds(Arrays.asList(catIds));
         return R.ok();
     }
 
