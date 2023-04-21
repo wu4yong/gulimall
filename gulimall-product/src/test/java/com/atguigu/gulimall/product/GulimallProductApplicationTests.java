@@ -3,6 +3,7 @@ package com.atguigu.gulimall.product;
 
 import com.atguigu.gulimall.product.entity.BrandEntity;
 import com.atguigu.gulimall.product.service.BrandService;
+import com.atguigu.gulimall.product.service.IQiNiuService;
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
@@ -11,11 +12,15 @@ import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.io.File;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -23,6 +28,21 @@ public class GulimallProductApplicationTests {
 
     @Autowired
     BrandService brandService;
+
+
+    @Autowired
+    private IQiNiuService qiNiuService;
+
+
+
+    @Value("${qiniu.AccessKey}")
+    private String accessKey;
+
+    @Value("${qiniu.SecretKey}")
+    private String secretKey;
+
+    @Value("${qiniu.Bucket}")
+    private String bucket;
 
     @Test
     public void contextLoads() {
@@ -44,9 +64,9 @@ public class GulimallProductApplicationTests {
 
         UploadManager uploadManager = new UploadManager(cfg);
         //...生成上传凭证，然后准备上传
-        String accessKey = "your access key";
-        String secretKey = "your secret key";
-        String bucket = "wy-gulimall";
+        String accessKey = this.accessKey;
+        String secretKey = this.secretKey;
+        String bucket = this.bucket;
         //如果是Windows情况下，格式是 D:\\qiniu\\test.png
         String localFilePath = "D:\\app\\qiniu\\oppo.png";
         //默认不指定key的情况下，以文件内容的hash值作为文件名
@@ -72,5 +92,21 @@ public class GulimallProductApplicationTests {
         }
     }
 
+
+
+    @Test
+    public void testUploadFile() {
+        // 文件目录
+        String localFilePath = "D:\\app\\qiniu\\oppo.png";
+
+        File file = new File(localFilePath);
+        Assert.assertTrue(file.exists());
+        try {
+            Response response = qiNiuService.uploadFile(file);
+            Assert.assertTrue(response.isOK());
+        } catch (QiniuException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
