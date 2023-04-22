@@ -1,21 +1,21 @@
 package com.atguigu.gulimall.product.controller;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import com.atguigu.gulimall.product.entity.ProductAttrValueEntity;
+import com.atguigu.common.utils.PageUtils;
+import com.atguigu.common.utils.R;
+import com.atguigu.gulimall.product.entity.AttrEntity;
+import com.atguigu.gulimall.product.entity.AttrGroupEntity;
+import com.atguigu.gulimall.product.service.AttrAttrgroupRelationService;
+import com.atguigu.gulimall.product.service.AttrGroupService;
 import com.atguigu.gulimall.product.service.AttrService;
-import com.atguigu.gulimall.product.service.ProductAttrValueService;
-import com.atguigu.gulimall.product.vo.AttrRespVo;
-import com.atguigu.gulimall.product.vo.AttrVo;
+import com.atguigu.gulimall.product.service.CategoryService;
+import com.atguigu.gulimall.product.vo.AttrGroupRelationVo;
+import com.atguigu.gulimall.product.vo.AttrGroupWithAttrsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.atguigu.gulimall.product.entity.AttrGroupEntity;
-import com.atguigu.gulimall.product.service.AttrGroupService;
-import com.atguigu.common.utils.PageUtils;
-import com.atguigu.common.utils.R;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 
 
@@ -30,51 +30,67 @@ import com.atguigu.common.utils.R;
 @RequestMapping("product/attrgroup")
 public class AttrGroupController {
     @Autowired
-    private AttrService attrService;
+    private AttrGroupService attrGroupService;
 
     @Autowired
-    private ProductAttrValueService productAttrValueService;
+    private CategoryService categoryService;
 
-    ///product/attr/base/listforspu/{spuId}
+    @Autowired
+    AttrService attrService;
 
-    /**
-     *  获取spu规格
-     */
-    @GetMapping("/base/listforspu/{spuId}")
-    public R baseAttrlistforspu(@PathVariable("spuId") Long spuId){
+    @Autowired
+    AttrAttrgroupRelationService relationService;
 
-        List<ProductAttrValueEntity> entities = productAttrValueService.baseAttrListforspu(spuId);
+    ///product/attrgroup/attr/relation
+    @PostMapping("/attr/relation")
+    public R addRelation(@RequestBody List<AttrGroupRelationVo> vos){
 
-        return R.ok().put("data",entities);
+        relationService.saveBatch(vos);
+        return R.ok();
+    }
+
+    ///product/attrgroup/{catelogId}/withattr
+    @GetMapping("/{catelogId}/withattr")
+    public R getAttrGroupWithAttrs(@PathVariable("catelogId")Long catelogId){
+
+        //1、查出当前分类下的所有属性分组，
+        //2、查出每个属性分组的所有属性
+        List<AttrGroupWithAttrsVo> vos =  attrGroupService.getAttrGroupWithAttrsByCatelogId(catelogId);
+        return R.ok().put("data",vos);
     }
 
 
-    /**
-     * 查询规格参数信息
-     * @param params
-     * @param catelogId
-     * @param type
-     * @return
-     */
+    ///product/attrgroup/{attrgroupId}/attr/relation
+    @GetMapping("/{attrgroupId}/attr/relation")
+    public R attrRelation(@PathVariable("attrgroupId") Long attrgroupId){
+        List<AttrEntity> entities =  attrService.getRelationAttr(attrgroupId);
+        return R.ok().put("data",entities);
+    }
 
-    //product/attr/sale/list/0?
-    ///product/attr/base/list/{catelogId}
-    @GetMapping("/{attrType}/list/{catelogId}")
-    public R baseAttrList(@RequestParam Map<String, Object> params,
-                          @PathVariable("catelogId") Long catelogId,
-                          @PathVariable("attrType")String type){
+    ///product/attrgroup/{attrgroupId}/noattr/relation
+    @GetMapping("/{attrgroupId}/noattr/relation")
+    public R attrNoRelation(@PathVariable("attrgroupId") Long attrgroupId,
+                            @RequestParam Map<String, Object> params){
+        PageUtils page = attrService.getNoRelationAttr(params,attrgroupId);
+        return R.ok().put("page",page);
+    }
 
-        PageUtils page = attrService.queryBaseAttrPage(params,catelogId,type);
-        return R.ok().put("page", page);
+    @PostMapping("/attr/relation/delete")
+    public R deleteRelation(@RequestBody  AttrGroupRelationVo[] vos){
+        attrService.deleteRelation(vos);
+        return R.ok();
     }
 
     /**
      * 列表
      */
-    @RequestMapping("/list")
-    //@RequiresPermissions("product:attr:list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = attrService.queryPage(params);
+    @RequestMapping("/list/{catelogId}")
+    //@RequiresPermissions("product:attrgroup:list")
+    public R list(@RequestParam Map<String, Object> params,
+                  @PathVariable("catelogId") Long catelogId){
+//        PageUtils page = attrGroupService.queryPage(params);
+
+        PageUtils page = attrGroupService.queryPage(params,catelogId);
 
         return R.ok().put("page", page);
     }
@@ -83,24 +99,28 @@ public class AttrGroupController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{attrId}")
-    //@RequiresPermissions("product:attr:info")
-    public R info(@PathVariable("attrId") Long attrId){
+    @RequestMapping("/info/{attrGroupId}")
+    //@RequiresPermissions("product:attrgroup:info")
+    public R info(@PathVariable("attrGroupId") Long attrGroupId){
+        AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
 
-        // AttrEntity attr = attrService.getById(attrId);
+        Long catelogId = attrGroup.getCatelogId();
+        Long[] path = categoryService.findCatelogPath(catelogId);
 
-        AttrRespVo respVo = attrService.getAttrInfo(attrId);
+        attrGroup.setCatelogPath(path);
 
-        return R.ok().put("attr", respVo);
+        return R.ok().put("attrGroup", attrGroup);
     }
+
+
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    //@RequiresPermissions("product:attr:save")
-    public R save(@RequestBody AttrVo attr){
-        attrService.saveAttr(attr);
+    //@RequiresPermissions("product:attrgroup:save")
+    public R save(@RequestBody AttrGroupEntity attrGroup){
+        attrGroupService.save(attrGroup);
 
         return R.ok();
     }
@@ -109,33 +129,20 @@ public class AttrGroupController {
      * 修改
      */
     @RequestMapping("/update")
-    //@RequiresPermissions("product:attr:update")
-    public R update(@RequestBody AttrVo attr){
-
-        attrService.updateAttrById(attr);
-
-        return R.ok();
-    }
-
-    ///product/attr/update/{spuId}
-    @PostMapping("/update/{spuId}")
-    //@RequiresPermissions("product:attr:update")
-    public R updateSpuAttr(@PathVariable("spuId") Long spuId,
-                           @RequestBody List<ProductAttrValueEntity> entities){
-
-        productAttrValueService.updateSpuAttr(spuId,entities);
+    //@RequiresPermissions("product:attrgroup:update")
+    public R update(@RequestBody AttrGroupEntity attrGroup){
+        attrGroupService.updateById(attrGroup);
 
         return R.ok();
     }
-
 
     /**
      * 删除
      */
     @RequestMapping("/delete")
-    //@RequiresPermissions("product:attr:delete")
-    public R delete(@RequestBody Long[] attrIds){
-        attrService.removeByIds(Arrays.asList(attrIds));
+    //@RequiresPermissions("product:attrgroup:delete")
+    public R delete(@RequestBody Long[] attrGroupIds){
+        attrGroupService.removeByIds(Arrays.asList(attrGroupIds));
 
         return R.ok();
     }
