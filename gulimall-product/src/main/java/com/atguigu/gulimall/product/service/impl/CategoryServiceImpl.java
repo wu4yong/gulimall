@@ -1,5 +1,6 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import com.atguigu.gulimall.product.vo.Catelog2Vo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,6 +58,26 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         //TODO  1、检查当前删除的菜单，是否被别的地方引用
         //逻辑删除
         baseMapper.deleteBatchIds(asList);
+    }
+
+    @Override
+    public Long[] findCatelogPath(Long catelogId) {
+        return new Long[0];
+    }
+
+    @Override
+    public void updateCascade(CategoryEntity category) {
+
+    }
+
+    @Override
+    public List<CategoryEntity> getLevel1Categorys() {
+        return null;
+    }
+
+    @Override
+    public Map<String, List<Catelog2Vo>> getCatalogJson() {
+        return null;
     }
 
     //递归查找所有菜单的子菜单
