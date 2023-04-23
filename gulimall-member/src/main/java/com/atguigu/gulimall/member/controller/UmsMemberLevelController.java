@@ -25,7 +25,7 @@ import com.atguigu.common.utils.R;
  * @date 2023-04-02 12:29:36
  */
 @RestController
-@RequestMapping("member/umsmemberlevel")
+@RequestMapping("member/memberlevel")
 public class UmsMemberLevelController {
     @Autowired
     private UmsMemberLevelService umsMemberLevelService;
