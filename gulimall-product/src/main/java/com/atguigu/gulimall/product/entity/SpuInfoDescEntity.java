@@ -9,7 +9,7 @@ import lombok.Data;
 
 /**
  * spu信息介绍
- * 
+ *
  * @author wuyong
  * @email wu4yong@163.com
  * @date 2023-04-02 12:20:37
@@ -23,6 +23,7 @@ public class SpuInfoDescEntity implements Serializable {
 	 * 商品id
 	 */
 	@TableId
+//	@TableId(type = IdType.INPUT)
 	private Long spuId;
 	/**
 	 * 商品介绍
