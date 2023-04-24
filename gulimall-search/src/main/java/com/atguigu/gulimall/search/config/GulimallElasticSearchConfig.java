@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 1、导入依赖
  * 2、编写配置,给容器中注入一个RestHighLevelClient
+ * 参考官网：https://www.elastic.co/guide/en/elasticsearch/client/java-rest/7.4/java-rest-high.html
  * @author wuyong
  * @email wu4yong@163.com
  * @date 2023-04-02 12:29:36
