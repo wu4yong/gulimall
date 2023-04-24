@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  *
@@ -14,7 +13,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  * @date 2023-04-02 12:29:36
  */
 
-@EnableRedisHttpSession
+//@EnableRedisHttpSession
 @EnableFeignClients
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableDiscoveryClient
