@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * 1、导入依赖
+ * 2、编写配置,给容器中注入一个RestHighLevelClient
  * @author wuyong
  * @email wu4yong@163.com
  * @date 2023-04-02 12:29:36
