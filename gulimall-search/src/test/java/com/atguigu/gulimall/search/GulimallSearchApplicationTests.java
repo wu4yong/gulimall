@@ -58,6 +58,7 @@ public class GulimallSearchApplicationTests {
 
 
     /**
+     * https://www.elastic.co/guide/en/elasticsearch/client/java-rest/7.4/java-rest-high-search.html
      * 复杂检索:在bank中搜索address中包含mill的所有人的年龄分布以及平均年龄，平均薪资
      *
      * @throws IOException
@@ -68,7 +69,7 @@ public class GulimallSearchApplicationTests {
         SearchRequest searchRequest = new SearchRequest();
 
         //1.1）指定索引
-        searchRequest.indices("bank");
+        searchRequest.indices("bank");//从什么地方检索
         //1.2）构造检索条件
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(QueryBuilders.matchQuery("address", "Mill"));
@@ -119,6 +120,7 @@ public class GulimallSearchApplicationTests {
 
 
     /**
+     * https://www.elastic.co/guide/en/elasticsearch/client/java-rest/7.4/java-rest-high-search.html
      * @throws IOException
      */
     @Test
@@ -146,6 +148,7 @@ public class GulimallSearchApplicationTests {
     /**
      * 测试ES数据
      * 更新也可以
+     * https://www.elastic.co/guide/en/elasticsearch/client/java-rest/7.4/java-rest-high-document-index.html
      */
     @Test
     public void indexData() throws IOException {
