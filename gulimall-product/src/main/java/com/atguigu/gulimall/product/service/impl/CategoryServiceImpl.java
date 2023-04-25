@@ -33,6 +33,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    // 参考文档：https://github.com/redisson/redisson/wiki/1.-%E6%A6%82%E8%BF%B0
     // @Autowired
     //private RedissonClient redissonClient;
 
