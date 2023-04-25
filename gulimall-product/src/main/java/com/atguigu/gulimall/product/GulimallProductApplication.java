@@ -61,9 +61,13 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  *          源码：WebMvcAutoConfiguration
  *              ---ResourceProperties
  *
- *  4、页面修改不重启服务器实时更新
- *  1）、引入dev-tools
- *  2）、修改玩页面 controller  shift f9 重新自动编译下页面
+ *  4）、页面修改不重启服务器实时更新
+ *      1）、引入dev-tools
+ *      2）、修改玩页面 controller  shift f9 重新自动编译下页面
+ *  6、整合redis
+ *  1）、引入data-redis-starter
+ *  2）、简单配置redis的host等信息
+ *  3）、使用springboot自动配置好的stringRedisTemplate操作
  */
 @EnableFeignClients(basePackages = "com.atguigu.gulimall.product.feign")
 @MapperScan("com.atguigu.gulimall.product.dao")//添加mybatis文件扫码
