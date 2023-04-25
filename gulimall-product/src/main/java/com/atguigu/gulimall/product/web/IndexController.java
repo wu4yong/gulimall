@@ -165,22 +165,22 @@ public class IndexController {
      * 3车位
      * 信号量也可以做分布式限流
      */
-//    @GetMapping(value = "/park")
-//    @ResponseBody
-//    public String park() throws InterruptedException {
-//
-//        RSemaphore park = redisson.getSemaphore("park");
-//        park.acquire();     //获取一个信号、获取一个值,占一个车位
-//        boolean flag = park.tryAcquire();
-//
-//        if (flag) {
-//            //执行业务
-//        } else {
-//            return "error";
-//        }
-//
-//        return "ok=>" + flag;
-//    }
+    @GetMapping(value = "/park")
+    @ResponseBody
+    public String park() throws InterruptedException {
+
+        RSemaphore park = redisson.getSemaphore("park");
+        park.acquire();     //获取一个信号、获取一个值,占一个车位
+        boolean flag = park.tryAcquire();
+
+        if (flag) {
+            //执行业务
+        } else {
+            return "error";
+        }
+
+        return "ok=>" + flag;
+    }
 
     @GetMapping(value = "/go")
     @ResponseBody
