@@ -3,10 +3,7 @@ package com.atguigu.gulimall.product.web;
 import com.atguigu.gulimall.product.entity.CategoryEntity;
 import com.atguigu.gulimall.product.service.CategoryService;
 import com.atguigu.gulimall.product.vo.Catelog2Vo;
-import org.redisson.api.RCountDownLatch;
-import org.redisson.api.RLock;
-import org.redisson.api.RReadWriteLock;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -185,13 +182,13 @@ public class IndexController {
 //        return "ok=>" + flag;
 //    }
 
-//    @GetMapping(value = "/go")
-//    @ResponseBody
-//    public String go() {
-//        RSemaphore park = redisson.getSemaphore("park");
-//        park.release();     //释放一个车位
-//        return "ok";
-//    }
+    @GetMapping(value = "/go")
+    @ResponseBody
+    public String go() {
+        RSemaphore park = redisson.getSemaphore("park");
+        park.release();     //释放一个车位
+        return "ok";
+    }
 
 
     /**
