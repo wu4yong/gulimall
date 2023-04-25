@@ -448,20 +448,22 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 //加锁成功...执行业务
                 dataFromDb = getDataFromDb();
             } finally {
+
+                /***
+                 * 删除锁的思路：参考Redis官网文档：http://redis.cn/commands/set.html
+                 * 先去redis查询下保证当前的锁是自己的
+                 * 获取值对比，对比成功删除=原子性 lua脚本解锁
+                 *  String lockValue = stringRedisTemplate.opsForValue().get("lock");
+                 *  if (uuid.equals(lockValue)) {
+                 *   //删除我自己的锁
+                 *    stringRedisTemplate.delete("lock");
+                 *   }
+                 */
                 String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
                 //删除锁
                 stringRedisTemplate.execute(new DefaultRedisScript<Long>(script, Long.class), Arrays.asList("lock"), uuid);
             }
 
-            /***
-             * 先去redis查询下保证当前的锁是自己的
-             * 获取值对比，对比成功删除=原子性 lua脚本解锁
-             *  String lockValue = stringRedisTemplate.opsForValue().get("lock");
-             *  if (uuid.equals(lockValue)) {
-             *   //删除我自己的锁
-             *    stringRedisTemplate.delete("lock");
-             *   }
-             */
             return dataFromDb;
         } else {
             //  加锁失败...重试机制
