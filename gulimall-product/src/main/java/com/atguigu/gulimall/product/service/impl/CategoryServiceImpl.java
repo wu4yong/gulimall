@@ -436,8 +436,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         String uuid = UUID.randomUUID().toString();
         /**
          * 1、占分布式锁。去redis占坑
-         *      设置过期时间必须和加锁是同步的，保证原子性（避免死锁）
          */
+        // 设置过期时间必须和加锁是同步的，保证原子性（避免死锁）
         Boolean lock = stringRedisTemplate.opsForValue().setIfAbsent("lock", uuid, 300, TimeUnit.SECONDS);
 
         // 加锁成功
@@ -449,7 +449,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 dataFromDb = getDataFromDb();
             } finally {
                 String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
-                //释放锁
+                //删除锁
                 stringRedisTemplate.execute(new DefaultRedisScript<Long>(script, Long.class), Arrays.asList("lock"), uuid);
             }
 
