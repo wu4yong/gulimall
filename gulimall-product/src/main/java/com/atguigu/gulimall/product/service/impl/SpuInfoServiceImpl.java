@@ -344,6 +344,39 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         } else {
             //远程调用失败
             //TODO 7、重复调用？接口幂等性:重试机制
+            /**
+             * feign的调用流程
+             * 1、构造请求数据
+             * RequestTemplate template = buildTemplateFromArgs.create(argv);
+             * 2、发送执行请求进行执行，（执行成功会解码响应数据）
+             *           --》Object executeAndDecode(RequestTemplate template) throws Throwable
+             *              --》     response = client.execute(request, options);
+             *
+             * 3、执行请求会有重试机制
+             *   外部重试器： Retryer retryer = this.retryer.clone();
+             *     while (true) {
+             *       try {
+             *         return executeAndDecode(template);
+             *       } catch (RetryableException e) {
+             *         try {
+             *           retryer.continueOrPropagate(e);
+             *         } catch (RetryableException th) {
+             *           Throwable cause = th.getCause();
+             *           if (propagationPolicy == UNWRAP && cause != null) {
+             *             throw cause;
+             *           } else {
+             *             throw th;
+             *           }
+             *         }
+             *         if (logLevel != Logger.Level.NONE) {
+             *           logger.logRetry(metadata.configKey(), logLevel);
+             *         }
+             *         continue;
+             *       }
+             *     }
+             *
+             *
+             */
         }
     }
 
