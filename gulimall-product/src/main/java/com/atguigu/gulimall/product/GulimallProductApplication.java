@@ -68,6 +68,24 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  *  1）、引入data-redis-starter
  *  2）、简单配置redis的host等信息
  *  3）、使用springboot自动配置好的stringRedisTemplate操作
+ *
+ *  7、整合Redisson作为分布式锁功能框架
+ *  1）、引入依赖
+ *         <dependency>
+ *             <groupId>org.redisson</groupId>
+ *             <artifactId>redisson</artifactId>
+ *             <version>3.12.0</version>
+ *         </dependency>
+ *  2）、配置Redisson 参考：https://github.com/redisson/redisson/wiki/2.-Configuration
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 @EnableFeignClients(basePackages = "com.atguigu.gulimall.product.feign")
 @MapperScan("com.atguigu.gulimall.product.dao")//添加mybatis文件扫码
