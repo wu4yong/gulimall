@@ -26,19 +26,18 @@ public class IndexController {
     private CategoryService categoryService;
 
 
-
 //    @Autowired
 //    private RedissonClient redisson;
 
     @Autowired
 //    private StringRedisTemplate stringRedisTemplate;
 
-    @GetMapping(value = {"/","index.html"})
+    @GetMapping(value = {"/", "index.html"})
     private String indexPage(Model model) {
 
         //1、查出所有的一级分类
         List<CategoryEntity> categoryEntities = categoryService.getLevel1Categorys();
-        model.addAttribute("categories",categoryEntities);
+        model.addAttribute("categories", categoryEntities);
 
         //ThymeleafProperties 包含前后缀
         return "index";
@@ -50,10 +49,10 @@ public class IndexController {
     @ResponseBody
     public Map<String, List<Catelog2Vo>> getCatalogJson() {
 
-        Map<String, List<Catelog2Vo>> catalogJson = categoryService.getCatalogJson();
+        //Map<String, List<Catelog2Vo>> catalogJson = categoryService.getCatalogJson();
+        Map<String, List<Catelog2Vo>> catalogJson = categoryService.getCatalogJson2();
 
         return catalogJson;
-
     }
 
 

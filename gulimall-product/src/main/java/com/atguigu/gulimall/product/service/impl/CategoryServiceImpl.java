@@ -207,6 +207,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * <p>
      * 原理：
      * CacheManager(RedisCacheManager)->Cache(RedisCache)->Cache负责缓存的读写
+     * 缓存里的数据如何和数据库的数据保持一致？？
+     * 缓存数据一致性
+     * 1)、双写模式
+     * 2)、失效模式
      *
      * @return
      */
@@ -223,8 +227,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
 
     //    @Cacheable(value = "category", key = "#root.methodName")
-    @Override
-    public Map<String, List<Catelog2Vo>> getCatalogJson() {
+    public Map<String, List<Catelog2Vo>> getCatalogJson1() {
         System.out.println("查询了数据库");
 
         //将数据库的多次查询变为一次
@@ -268,21 +271,25 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return parentCid;
     }
 
-    //TODO 产生堆外内存溢出OutOfDirectMemoryError:
-    //1)、springboot2.0以后默认使用lettuce操作redis的客户端，它使用通信
-    //2)、lettuce的bug导致netty堆外内存溢出   可设置：-Dio.netty.maxDirectMemory
-    //解决方案：不能直接使用-Dio.netty.maxDirectMemory去调大堆外内存
-    //1)、升级lettuce客户端。      2）、切换使用jedis
-    // @Override
+
+    /**
+     * TODO 产生堆外内存溢出OutOfDirectMemoryError:
+     * 1)、springboot2.0以后默认使用lettuce操作redis的客户端，它使用通信
+     * 2)、lettuce的bug导致netty堆外内存溢出   可设置：-Dio.netty.maxDirectMemory
+     *      解决方案：不能直接使用-Dio.netty.maxDirectMemory去调大堆外内存
+     *      最终解决方案1)、升级lettuce客户端。      2）、切换使用jedis
+     *
+     * @return
+     */
+    /**
+     * 缓存思路：
+     * 约等于：给缓存中放json字符串，拿出的json字符串，反序列为能用的对象
+     * 1、空结果缓存：解决缓存穿透问题
+     * 2、设置过期时间(加随机值)：解决缓存雪崩
+     * 3、加锁：解决缓存击穿问题
+     */
+    @Override
     public Map<String, List<Catelog2Vo>> getCatalogJson2() {
-        //给缓存中放json字符串，拿出的json字符串，反序列为能用的对象
-
-        /**
-         * 1、空结果缓存：解决缓存穿透问题
-         * 2、设置过期时间(加随机值)：解决缓存雪崩
-         * 3、加锁：解决缓存击穿问题
-         */
-
         //1、加入缓存逻辑,缓存中存的数据是json字符串
         //JSON跨语言。跨平台兼容。
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
@@ -302,17 +309,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
         return result;
     }
-
-
-    /**
-     * 缓存里的数据如何和数据库的数据保持一致？？
-     * 缓存数据一致性
-     * 1)、双写模式
-     * 2)、失效模式
-     *
-     * @return
-     */
-
 
     private List<CategoryEntity> getParent_cid(List<CategoryEntity> selectList, Long parentCid) {
         List<CategoryEntity> categoryEntities = selectList.stream().filter(item -> item.getParentCid().equals(parentCid)).collect(Collectors.toList());
