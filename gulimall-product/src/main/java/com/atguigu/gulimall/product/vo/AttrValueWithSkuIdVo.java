@@ -3,11 +3,11 @@ package com.atguigu.gulimall.product.vo;
 import lombok.Data;
 
 /**
- * @Description:
- * @Created: with IntelliJ IDEA.
- * @author: 夏沫止水
- * @createTime: 2020-06-23 18:59
- **/
+ * @author wuyong
+ * @email wu4yong@163.com
+ * @date 2023-04-27 0:47:40
+ */
+
 
 @Data
 public class AttrValueWithSkuIdVo {

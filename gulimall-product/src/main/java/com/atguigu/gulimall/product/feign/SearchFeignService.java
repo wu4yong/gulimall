@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 /**
- * @Description:
- * @Created: with IntelliJ IDEA.
- * @author: 夏沫止水
- * @createTime: 2020-06-06 17:12
- **/
+ * @author wuyong
+ * @email wu4yong@163.com
+ * @date 2023-04-27 0:47:40
+ */
 
 @FeignClient("gulimall-search")
 public interface SearchFeignService {

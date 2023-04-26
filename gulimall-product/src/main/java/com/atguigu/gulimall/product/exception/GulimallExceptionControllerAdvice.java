@@ -14,11 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @Description: 集中处理所有异常
- * @Created: with IntelliJ IDEA.
- * @author: 夏沫止水
- * @createTime: 2020-05-27 17:14
- **/
+ * @author wuyong
+ * @email wu4yong@163.com
+ * @date 2023-04-27 0:47:40
+ */
+
 
 @Slf4j
 @RestControllerAdvice(basePackages = "com.xunqi.gulimall.product.controller")

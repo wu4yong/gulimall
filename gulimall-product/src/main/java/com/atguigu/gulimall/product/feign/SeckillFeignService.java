@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 /**
- * @Description:
- * @Created: with IntelliJ IDEA.
- * @author: 夏沫止水
- * @createTime: 2020-07-10 15:53
- **/
+ * @author wuyong
+ * @email wu4yong@163.com
+ * @date 2023-04-27 0:47:40
+ */
 
 @FeignClient(value = "gulimall-seckill",fallback = SeckillFeignServiceFallBack.class)
 public interface SeckillFeignService {
