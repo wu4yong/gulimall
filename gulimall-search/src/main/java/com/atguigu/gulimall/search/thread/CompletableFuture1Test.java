@@ -7,7 +7,8 @@ import java.util.concurrent.Executors;
 
 /**
  * 测试CompletableFuture
- *
+ *  1、 runXxxx 都是没有返回结果的， supplyXxx 都是可以获取返回结果的
+ *  2、 可以传入自定义的线程池， 否则就用默认的线程池；
  * @author wuyong
  * @email wu4yong@163.com
  * @date 2023-04-02 12:29:36

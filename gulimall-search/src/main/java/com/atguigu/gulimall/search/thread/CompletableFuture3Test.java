@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 
 /**
  * 测试CompletableFuture
- *
+ *  和 complete 一样， 可对结果做最后的处理（可处理异常） ， 可改变返回值。
  * @author wuyong
  * @email wu4yong@163.com
  * @date 2023-04-02 12:29:36

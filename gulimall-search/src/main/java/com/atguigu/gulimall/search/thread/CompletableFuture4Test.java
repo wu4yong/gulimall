@@ -7,7 +7,14 @@ import java.util.concurrent.Executors;
 
 /**
  * 测试CompletableFuture 串行化
- *
+ *  thenApply 方法： 当一个线程依赖另一个线程时， 获取上一个任务返回的结果， 并返回当前任务的返回值。
+ *  thenAccept 方法： 消费处理结果。 接收任务的处理结果， 并消费处理， 无返回结果。
+ *  thenRun 方法： 只要上面的任务执行完成， 就开始执行 thenRun， 只是处理完任务后， 执行
+ *  thenRun 的后续操作
+ * 带有 Async 默认是异步执行的。 同之前。
+ * 以上都要前置任务成功完成。
+ *      Function<? super T,? extends U>
+ *              T： 上一个任务返回结果的类型U： 当前任务的返回值类型
  * @author wuyong
  * @email wu4yong@163.com
  * @date 2023-04-02 12:29:36
