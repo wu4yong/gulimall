@@ -217,9 +217,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * <p>
      * 4、Spring-Cache的不足之处：
      * 1）、读模式
-     * 缓存穿透：查询一个null数据。解决方案：缓存空数据
+     * 缓存穿透：查询一个null数据。解决方案：缓存空数据  cache-null-values=true
      * 缓存击穿：大量并发进来同时查询一个正好过期的数据。解决方案：加锁 ? 默认是无加锁的;使用sync = true来解决击穿问题
-     * 缓存雪崩：大量的key同时过期。解决：加随机时间。加上过期时间
+     * 缓存雪崩：大量的key同时过期。解决：加随机时间。加上过期时间 time-to-live=3600000
      * 2)、写模式：（缓存与数据库一致）
      * 1）、读写加锁。
      * 2）、引入Canal,感知到MySQL的更新去更新Redis
