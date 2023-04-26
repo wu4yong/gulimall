@@ -2,7 +2,6 @@ package com.atguigu.gulimall.search.controller;
 
 import com.atguigu.gulimall.search.service.MallSearchService;
 import com.atguigu.gulimall.search.vo.SearchParam;
-import com.atguigu.gulimall.search.vo.SearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,9 +33,9 @@ public class SearchController {
         param.set_queryString(request.getQueryString());
 
         //1、根据传递来的页面的查询参数，去es中检索商品
-        SearchResult result = mallSearchService.search(param);
+//        SearchResult result = mallSearchService.search(param);
 
-        model.addAttribute("result",result);
+//        model.addAttribute("result",result);
 
         return "list";
     }
