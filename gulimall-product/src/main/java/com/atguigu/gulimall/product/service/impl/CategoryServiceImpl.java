@@ -193,7 +193,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      *      2）指定缓存的数据的存活时间: 配置文件中修改存活时间 例：spring.cache.redis.time-to-live=3600000（毫秒为单位）
      *      3）将数据保存为json格式
      *
-     *
+     * 4）、原理：
+     *      CacheAutoConfiguration-> RedisCacheConfiguration-CacheManager(RedisCacheManager)
+     *         自动配置来了 RedisCacheManager-->初始化所有缓存-->每个缓存决定使用什么配置
+     *         -->想修改缓存的位置，只需要修改RedisCacheConfiguration即可
+     *         -->就好应用到当前RedisCacheManager管理的所有缓存分区中
+     *         ->Cache(RedisCache)
+     *              ->Cache负责缓存的读写
      *
      *
      *
@@ -212,8 +218,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * 常规数据（读多写少，即时性，一致性要求不高的数据，完全可以使用Spring-Cache）：写模式(只要缓存的数据有过期时间就足够了)
      * 特殊数据：特殊设计
      * <p>
-     * 原理：
-     * CacheManager(RedisCacheManager)->Cache(RedisCache)->Cache负责缓存的读写
+
      */
     @Cacheable(value = {"category"}, key = "#root.method.name", sync = true)
     @Override
