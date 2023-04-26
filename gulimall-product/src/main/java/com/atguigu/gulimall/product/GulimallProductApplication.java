@@ -3,6 +3,7 @@ package com.atguigu.gulimall.product;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
@@ -78,15 +79,32 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  *         </dependency>
  *  2）、配置Redisson 参考：https://github.com/redisson/redisson/wiki/2.-Configuration
  *
- *
- *
- *
+ * 8、整合SpringCache简化缓存开发
+ * 1）、引入依赖
+ *      spring-boot-starter-cache
+ *      spring-boot-starter-data-redis
+ *  2）、写配置
+ *      （1）自动配置了哪些
+ *      CacheAutoConfiguration会导入RedisCacheConfiguration
+ *          自动配好了缓存管理器：RedisCacheManager
+ *      （2）、配置使用Redis使用缓存
+ *          spring.cache.type=redis
+ *  3）、测试使用缓存
+ *      @Cacheable: Triggers cache population.触发将数据保存到缓存的操作
+ *      @CacheEvict: Triggers cache eviction.触发将数据保从缓存删除的操作
+ *      @CachePut: Updates the cache without interfering with the method execution.不影响方法执行更新缓存
+ *      @Caching: Regroups multiple cache operations to be applied on a method.组合以上多个操作
+ *      @CacheConfig: Shares some common cache-related settings at class-level.在类级别共享缓存配置
+ *      1）、开启缓存 @EnableCaching
+ *      2）、只需要使用注解就能完成缓存操作
  *
  *
  *
  *
  *
  */
+
+@EnableCaching      //开启缓存功能
 @EnableFeignClients(basePackages = "com.atguigu.gulimall.product.feign")
 @MapperScan("com.atguigu.gulimall.product.dao")//添加mybatis文件扫码
 @EnableDiscoveryClient
