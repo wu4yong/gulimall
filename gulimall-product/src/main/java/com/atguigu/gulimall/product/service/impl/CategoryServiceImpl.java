@@ -13,6 +13,7 @@ import com.atguigu.gulimall.product.vo.Catelog2Vo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -168,10 +169,19 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     /**
      * 级联更新所有关联的数据
-     *
+     * CacheEvict: 失效模式
+     * 1、同时进行多种缓存操作：@Caching
+     * 2、指定删除某个分区下的所有数据 @CacheEvict(value = "category",allEntries = true)
+     * 3、存储同一类型的数据，都可以指定为同一分区
      * @param category
      */
-    @Transactional
+
+    // @Caching(evict = {
+    //         @CacheEvict(value = "category",key = "'getLevel1Categorys'"),
+    //         @CacheEvict(value = "category",key = "'getCatalogJson'")
+    // })
+    @CacheEvict(value = "category",allEntries = true)       //删除某个分区下的所有数据
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateCascade(CategoryEntity category) {
         this.updateById(category);
@@ -179,27 +189,27 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
     /**
-     *  1、每一个需要缓存的数据我们都来指定要放到那个名字的缓存。【缓存的分区(按照业务类型分)】
-     *  2、@Cacheable(value = {"category"}
-     *      1）代表当前方法的结果需要缓存，如果缓存中有，方法都不用调用
-     *      2）如果缓存中没有，会调用方法。最后将方法的结果放入缓存
-     *  3、默认行为
-     *     1）、如果缓存中有，方法不再调用
-     *     2）、key是默认生成的:缓存的名字::SimpleKey::[](自动生成key值)
-     *     3）、缓存的value值，默认使用jdk序列化机制，将序列化的数据存到redis中
-     *     4）、默认时间是 -1：
-     *    自定义操作：
-     *      1）key的生成 指定生成缓存的key：key属性指定，接收一个Spel
-     *      2）指定缓存的数据的存活时间: 配置文件中修改存活时间 例：spring.cache.redis.time-to-live=3600000（毫秒为单位）
-     *      3）将数据保存为json格式
-     *
+     * 1、每一个需要缓存的数据我们都来指定要放到那个名字的缓存。【缓存的分区(按照业务类型分)】
+     * 2、@Cacheable(value = {"category"}
+     * 1）代表当前方法的结果需要缓存，如果缓存中有，方法都不用调用
+     * 2）如果缓存中没有，会调用方法。最后将方法的结果放入缓存
+     * 3、默认行为
+     * 1）、如果缓存中有，方法不再调用
+     * 2）、key是默认生成的:缓存的名字::SimpleKey::[](自动生成key值)
+     * 3）、缓存的value值，默认使用jdk序列化机制，将序列化的数据存到redis中
+     * 4）、默认时间是 -1：
+     * 自定义操作：
+     * 1）key的生成 指定生成缓存的key：key属性指定，接收一个Spel
+     * 2）指定缓存的数据的存活时间: 配置文件中修改存活时间 例：spring.cache.redis.time-to-live=3600000（毫秒为单位）
+     * 3）将数据保存为json格式
+     * <p>
      * 4）、原理：
-     *      CacheAutoConfiguration-> RedisCacheConfiguration-CacheManager(RedisCacheManager)
-     *         自动配置来了 RedisCacheManager-->初始化所有缓存-->每个缓存决定使用什么配置
-     *         -->想修改缓存的位置，只需要修改RedisCacheConfiguration即可
-     *         -->就好应用到当前RedisCacheManager管理的所有缓存分区中
-     *         ->Cache(RedisCache)
-     *              ->Cache负责缓存的读写
+     * CacheAutoConfiguration-> RedisCacheConfiguration-CacheManager(RedisCacheManager)
+     * 自动配置来了 RedisCacheManager-->初始化所有缓存-->每个缓存决定使用什么配置
+     * -->想修改缓存的位置，只需要修改RedisCacheConfiguration即可
+     * -->就好应用到当前RedisCacheManager管理的所有缓存分区中
+     * ->Cache(RedisCache)
+     * ->Cache负责缓存的读写
      *
      *
      *
@@ -218,9 +228,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * 常规数据（读多写少，即时性，一致性要求不高的数据，完全可以使用Spring-Cache）：写模式(只要缓存的数据有过期时间就足够了)
      * 特殊数据：特殊设计
      * <p>
-
      */
-    @Cacheable(value = {"category"}, key = "#root.method.name", sync = true)
+    @Cacheable(value = {"category"},key = "#root.method.name",sync = true)
     @Override
     public List<CategoryEntity> getLevel1Categorys() {
         System.out.println("getLevel1Categorys........");
@@ -231,9 +240,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return categoryEntities;
     }
 
-
-    //    @Cacheable(value = "category", key = "#root.methodName")
-    public Map<String, List<Catelog2Vo>> getCatalogJson1() {
+    @Override
+    @Cacheable(value = {"category"},key = "#root.method.name",sync = true)
+    public Map<String, List<Catelog2Vo>> getCatalogJson2() {
         System.out.println("查询了数据库");
 
         //将数据库的多次查询变为一次
@@ -294,8 +303,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * 2、设置过期时间(加随机值)：解决缓存雪崩
      * 3、加锁：解决缓存击穿问题
      */
-    @Override
-    public Map<String, List<Catelog2Vo>> getCatalogJson2() {
+
+    public Map<String, List<Catelog2Vo>> getCatalogJson1() {
         //1、加入缓存逻辑,缓存中存的数据是json字符串
         //JSON跨语言。跨平台兼容。
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
