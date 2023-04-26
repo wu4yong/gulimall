@@ -170,6 +170,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     /**
      * 级联更新所有关联的数据
      * CacheEvict: 失效模式
+     * @CachePut:双写模式，需要有返回值
      * 1、同时进行多种缓存操作：@Caching
      * 2、指定删除某个分区下的所有数据 @CacheEvict(value = "category",allEntries = true)
      * 3、存储同一类型的数据，都可以指定为同一分区
