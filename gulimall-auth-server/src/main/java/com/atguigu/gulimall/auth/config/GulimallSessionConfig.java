@@ -16,6 +16,11 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 @Configuration
 public class GulimallSessionConfig {
 
+    /**
+     * SpringSeesion 子域扩大
+     * 解决子域共享问题
+     * @return
+     */
     @Bean
     public CookieSerializer cookieSerializer() {
 
@@ -28,7 +33,11 @@ public class GulimallSessionConfig {
         return cookieSerializer;
     }
 
-
+    /**
+     * SpringSeesion redis 序列化
+     * 使用json的序列化方式序列化对象到redis中
+     * @return
+     */
     @Bean
     public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
         return new GenericJackson2JsonRedisSerializer();
