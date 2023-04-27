@@ -1,20 +1,21 @@
 package com.atguigu.gulimall.member.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import com.atguigu.gulimall.member.feign.CouponFeignService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.atguigu.gulimall.member.entity.UmsMemberEntity;
-import com.atguigu.gulimall.member.service.UmsMemberService;
+import com.atguigu.common.exception.BizCodeEnume;
 import com.atguigu.common.utils.PageUtils;
 import com.atguigu.common.utils.R;
+import com.atguigu.gulimall.member.entity.UmsMemberEntity;
+import com.atguigu.gulimall.member.exception.PhoneException;
+import com.atguigu.gulimall.member.exception.UsernameException;
+import com.atguigu.gulimall.member.feign.CouponFeignService;
+import com.atguigu.gulimall.member.service.UmsMemberService;
+import com.atguigu.gulimall.member.vo.MemberUserLoginVo;
+import com.atguigu.gulimall.member.vo.MemberUserRegisterVo;
+import com.atguigu.gulimall.member.vo.SocialUser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.Map;
 
 
 
@@ -33,7 +34,61 @@ public class UmsMemberController {
     CouponFeignService couponFeignService;
 
     @Autowired
-    private UmsMemberService umsMemberService;
+    private UmsMemberService memberService;
+
+
+
+    @PostMapping(value = "/register")
+    public R register(@RequestBody MemberUserRegisterVo vo) {
+
+        try {
+            memberService.register(vo);
+        } catch (PhoneException e) {
+            return R.error(BizCodeEnume.PHONE_EXIST_EXCEPTION.getCode(),BizCodeEnume.PHONE_EXIST_EXCEPTION.getMsg());
+        } catch (UsernameException e) {
+            return R.error(BizCodeEnume.USER_EXIST_EXCEPTION.getCode(),BizCodeEnume.USER_EXIST_EXCEPTION.getMsg());
+        }
+
+        return R.ok();
+    }
+
+
+    @PostMapping(value = "/login")
+    public R login(@RequestBody MemberUserLoginVo vo) {
+
+        UmsMemberEntity UmsMemberEntity = memberService.login(vo);
+
+        if (UmsMemberEntity != null) {
+            return R.ok().setData(UmsMemberEntity);
+        } else {
+            return R.error(BizCodeEnume.LOGINACCT_PASSWORD_EXCEPTION.getCode(),BizCodeEnume.LOGINACCT_PASSWORD_EXCEPTION.getMsg());
+        }
+    }
+
+
+    @PostMapping(value = "/oauth2/login")
+    public R oauthLogin(@RequestBody SocialUser socialUser) throws Exception {
+
+        UmsMemberEntity UmsMemberEntity = memberService.login(socialUser);
+
+        if (UmsMemberEntity != null) {
+            return R.ok().setData(UmsMemberEntity);
+        } else {
+            return R.error(BizCodeEnume.LOGINACCT_PASSWORD_EXCEPTION.getCode(),BizCodeEnume.LOGINACCT_PASSWORD_EXCEPTION.getMsg());
+        }
+    }
+
+    @PostMapping(value = "/weixin/login")
+    public R weixinLogin(@RequestParam("accessTokenInfo") String accessTokenInfo) {
+
+        UmsMemberEntity memberEntity = memberService.login(accessTokenInfo);
+        if (memberEntity != null) {
+            return R.ok().setData(memberEntity);
+        } else {
+            return R.error(BizCodeEnume.LOGINACCT_PASSWORD_EXCEPTION.getCode(),BizCodeEnume.LOGINACCT_PASSWORD_EXCEPTION.getMsg());
+        }
+    }
+
 
     @RequestMapping("/coupons")
     public R test(){
@@ -53,7 +108,7 @@ public class UmsMemberController {
     @RequestMapping("/list")
     //@RequiresPermissions("member:umsmember:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = umsMemberService.queryPage(params);
+        PageUtils page = memberService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -65,7 +120,7 @@ public class UmsMemberController {
     @RequestMapping("/info/{id}")
     //@RequiresPermissions("member:umsmember:info")
     public R info(@PathVariable("id") Long id){
-		UmsMemberEntity umsMember = umsMemberService.getById(id);
+        UmsMemberEntity umsMember = memberService.getById(id);
 
         return R.ok().put("umsMember", umsMember);
     }
@@ -76,7 +131,7 @@ public class UmsMemberController {
     @RequestMapping("/save")
     //@RequiresPermissions("member:umsmember:save")
     public R save(@RequestBody UmsMemberEntity umsMember){
-		umsMemberService.save(umsMember);
+		memberService.save(umsMember);
 
         return R.ok();
     }
@@ -87,7 +142,7 @@ public class UmsMemberController {
     @RequestMapping("/update")
     //@RequiresPermissions("member:umsmember:update")
     public R update(@RequestBody UmsMemberEntity umsMember){
-		umsMemberService.updateById(umsMember);
+		memberService.updateById(umsMember);
 
         return R.ok();
     }
@@ -98,7 +153,7 @@ public class UmsMemberController {
     @RequestMapping("/delete")
     //@RequiresPermissions("member:umsmember:delete")
     public R delete(@RequestBody Long[] ids){
-		umsMemberService.removeByIds(Arrays.asList(ids));
+		memberService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }
